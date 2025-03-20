@@ -36,7 +36,6 @@ export async function login(data: LoginData): Promise<ActionResult> {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/apply')
 
   // This is only reached if redirect fails
   return { success: true }
@@ -84,7 +83,6 @@ export async function signup(data: SignupData): Promise<ActionResult> {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/apply')
   
   // This is only reached if redirect fails
   return { success: true }

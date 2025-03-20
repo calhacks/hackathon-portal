@@ -24,6 +24,8 @@ export default function LoginPage() {
     
     try {
       const result = await login(loginData)
+      console.log("result")
+      console.log(result)
       if (result.error) {
         toast.error(result.error)
       } else {
@@ -31,7 +33,7 @@ export default function LoginPage() {
         router.push('/apply')
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      toast.error("An unexpected error occurredss")
       console.error(error)
     } finally {
       setIsLoading(false)
@@ -68,7 +70,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full rounded-lg shadow-md p-8">
+      <div className="w-full rounded-lg p-8">
         <div className="flex flex-col items-center justify-center gap-8">
           {!showSignup ? (
             <div className="text-center mb-6">

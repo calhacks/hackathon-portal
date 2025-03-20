@@ -54,7 +54,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script src="https://www.google.com/recaptcha/api.js?render=6LeSqJIpAAAAAHCvycHggB9fMrBC6KJ77meHbSzj" />
       </head>
       <body
         className={`${spaceGrotesk.variable} ${spaceMono.variable} ${karla.variable} font-sans antialiased min-h-screen`}
