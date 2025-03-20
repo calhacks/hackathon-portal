@@ -1,10 +1,18 @@
 "use client"
 
-import { useState, ChangeEvent, FormEvent } from "react"
+import { useState, ChangeEvent, FormEvent, useEffect } from "react"
 import { Separator } from "@/components/ui/separator"
+import { apply } from "./actions"
+import { Application } from "@/types/types"
+import { createClient } from "@/utils/supabase/client"
+import { Input } from "@/components/ui/input"
+import Link from "next/link"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function ApplicationsPage() {
-  const [formData, setFormData] = useState({
+  const router = useRouter()
+  const [formData, setFormData] = useState<Application>({
     firstName: "",
     lastName: "",
     email: "",
@@ -14,10 +22,23 @@ export default function ApplicationsPage() {
     github: "",
     linkedin: "",
     resume: null as File | null,
-    experience: "",
-    projectIdea: "",
-    whyParticipate: "",
   })
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient()
+      const user = await supabase.auth.getUser()
+      if (user) {
+        setFormData((prev) => ({
+          ...prev,
+          email: user.data.user?.email || "",
+          firstName: user.data.user?.user_metadata.first_name || "",
+          lastName: user.data.user?.user_metadata.last_name || "",
+        }))
+      }
+    }
+    fetchUser()
+  }, [])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -37,16 +58,20 @@ export default function ApplicationsPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Form submission logic would go here
-    alert("Application submitted! (This is just a placeholder)")
-    console.log(formData)
+    const result = await apply(formData)
+    if (result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success(result.success)
+      router.push("/applications")
+    }
   }
-  
+
   return (
     <div className="container max-w-3xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">UC Berkeley AI Hackathon 3.0</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="text-center my-8">
+        <h1 className="text-4xl font-bold tracking-tight">UC Berkeley AI Hackathon 3.0</h1>
+        <p className="text-lg text-muted-foreground mt-2">
           Submit your application for the upcoming hackathon
         </p>
       </div>
@@ -55,29 +80,31 @@ export default function ApplicationsPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Information */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
+            <p className="text-lg text-muted-foreground mb-4">Change these fields under <Link href="/profile" className="text-blue-500">My Profile</Link></p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+                <label htmlFor="firstName" className="block text-base font-medium mb-1">
                   First Name
                 </label>
-                <input
+                <Input
                   id="firstName"
                   name="firstName"
                   type="text"
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+                  className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
+                  disabled={true}
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+                <label htmlFor="lastName" className="block text-base font-medium mb-1">
                   Last Name
                 </label>
-                <input
+                <Input
                   id="lastName"
                   name="lastName"
                   type="text"
@@ -86,15 +113,16 @@ export default function ApplicationsPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
+                  disabled={true}
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
+              <label htmlFor="email" className="block text-base font-medium mb-1">
                 Email
               </label>
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
@@ -103,8 +131,9 @@ export default function ApplicationsPage() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                    focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
+                   dark:bg-gray-800 dark:text-white text-base"
                 placeholder="you@example.com"
+                disabled={true}
               />
             </div>
           </div>
@@ -113,13 +142,13 @@ export default function ApplicationsPage() {
 
           {/* Academic Information */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">Academic Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">Academic Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="university" className="block text-sm font-medium mb-1">
+                <label htmlFor="university" className="block text-base font-medium mb-1">
                   University
                 </label>
-                <input
+                <Input
                   id="university"
                   name="university"
                   type="text"
@@ -128,15 +157,15 @@ export default function ApplicationsPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
                   placeholder="UC Berkeley"
                 />
               </div>
               <div>
-                <label htmlFor="major" className="block text-sm font-medium mb-1">
+                <label htmlFor="major" className="block text-base font-medium mb-1">
                   Major
                 </label>
-                <input
+                <Input
                   id="major"
                   name="major"
                   type="text"
@@ -145,16 +174,16 @@ export default function ApplicationsPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
                   placeholder="Computer Science"
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="graduationYear" className="block text-sm font-medium mb-1">
+              <label htmlFor="graduationYear" className="block text-base font-medium mb-1">
                 Expected Graduation Year
               </label>
-              <input
+              <Input
                 id="graduationYear"
                 name="graduationYear"
                 type="text"
@@ -163,7 +192,7 @@ export default function ApplicationsPage() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                    focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
+                   dark:bg-gray-800 dark:text-white text-base"
                 placeholder="2025"
               />
             </div>
@@ -173,13 +202,13 @@ export default function ApplicationsPage() {
 
           {/* Professional Information */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">Professional Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">Professional Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="github" className="block text-sm font-medium mb-1">
+                <label htmlFor="github" className="block text-base font-medium mb-1">
                   GitHub Profile
                 </label>
-                <input
+                <Input
                   id="github"
                   name="github"
                   type="url"
@@ -187,15 +216,15 @@ export default function ApplicationsPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
                   placeholder="https://github.com/username"
                 />
               </div>
               <div>
-                <label htmlFor="linkedin" className="block text-sm font-medium mb-1">
+                <label htmlFor="linkedin" className="block text-base font-medium mb-1">
                   LinkedIn Profile
                 </label>
-                <input
+                <Input
                   id="linkedin"
                   name="linkedin"
                   type="url"
@@ -203,16 +232,16 @@ export default function ApplicationsPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                     dark:bg-gray-800 dark:text-white"
+                     dark:bg-gray-800 dark:text-white text-base"
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="resume" className="block text-sm font-medium mb-1">
+              <label htmlFor="resume" className="block text-base font-medium mb-1">
                 Resume (PDF)
               </label>
-              <input
+              <Input
                 id="resume"
                 name="resume"
                 type="file"
@@ -220,72 +249,19 @@ export default function ApplicationsPage() {
                 onChange={handleFileChange}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                    focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
+                   dark:bg-gray-800 dark:text-white text-base"
               />
             </div>
           </div>
 
           <Separator />
 
-          {/* Hackathon Information */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Hackathon Information</h2>
-            <div>
-              <label htmlFor="experience" className="block text-sm font-medium mb-1">
-                Previous AI/ML Experience
-              </label>
-              <textarea
-                id="experience"
-                name="experience"
-                rows={3}
-                value={formData.experience}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
-                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
-                placeholder="Describe your previous experience with AI/ML projects"
-              />
-            </div>
-            <div className="mt-4">
-              <label htmlFor="projectIdea" className="block text-sm font-medium mb-1">
-                Project Idea (Optional)
-              </label>
-              <textarea
-                id="projectIdea"
-                name="projectIdea"
-                rows={3}
-                value={formData.projectIdea}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
-                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
-                placeholder="Briefly describe a project idea for the hackathon"
-              />
-            </div>
-            <div className="mt-4">
-              <label htmlFor="whyParticipate" className="block text-sm font-medium mb-1">
-                Why do you want to participate?
-              </label>
-              <textarea
-                id="whyParticipate"
-                name="whyParticipate"
-                rows={3}
-                required
-                value={formData.whyParticipate}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
-                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
-                   dark:bg-gray-800 dark:text-white"
-                placeholder="Tell us why you want to participate in the hackathon"
-              />
-            </div>
-          </div>
 
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md 
-                 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md 
+                 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg"
             >
               Submit Application
             </button>
