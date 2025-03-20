@@ -1,11 +1,15 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Check, Home, FileText, Settings, Users, Library } from "lucide-react"
+import { LogOut, Globe, Moon, Sun, FileText, Settings, Users, Library } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
+import { useTheme } from "next-themes"
+import { logout } from "@/app/login/actions"
+import { useEffect, useState } from "react"
+
 const sidebarNavItems = [
   {
     title: "Apply",
@@ -22,15 +26,16 @@ const sidebarNavItems = [
     href: "/profile",
     icon: Users,
   },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div className="h-screen border-r bg-sidebar text-sidebar-foreground w-64 fixed left-0 top-0">
@@ -59,8 +64,35 @@ export function Sidebar() {
           </nav>
         </div>
         <Separator className="bg-sidebar-border" />
-        <div className="py-4">
-          <h3 className="text-sm font-medium">© 2024 Hackathons at Berkeley</h3>
+        <div className="flex justify-center space-x-6 py-4">
+          <Link
+            href="https://calhacks.io"
+            className="rounded-md p-2 transition-colors text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Globe className="h-5 w-5" />
+          </Link>
+          <button
+            className="rounded-md p-2 transition-colors text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {mounted ? (
+              theme === 'dark' ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )
+            ) : (
+              <div className="h-5 w-5" />
+            )}
+          </button>
+          <button
+            className="rounded-md p-2 transition-colors text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+            onClick={logout}
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>

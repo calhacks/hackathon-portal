@@ -5,38 +5,45 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
 
-export async function login(formData: FormData) {
+export type LoginData = {
+  email: string;
+  password: string;
+}
+
+export type SignupData = LoginData & {
+  firstName: string;
+  lastName: string;
+}
+
+export type ActionResult = {
+  success: boolean;
+  error?: string;
+}
+
+export async function login(data: LoginData): Promise<ActionResult> {
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabase.auth.signInWithPassword({
+    email: data.email,
+    password: data.password,
+  })
 
   if (error) {
-    redirect('/error')
+    return {
+      success: false,
+      error: error.message
+    }
   }
 
   revalidatePath('/', 'layout')
   redirect('/apply')
+
+  // This is only reached if redirect fails
+  return { success: true }
 }
 
-export async function signup(formData: FormData) {
+export async function signup(data: SignupData): Promise<ActionResult> {
   const supabase = await createClient()
-
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const firstName = formData.get('firstName') as string
-  const lastName = formData.get('lastName') as string
 
   // Sign up the user
   const { data: authData, error } = await supabase.auth.signUp({
@@ -44,16 +51,48 @@ export async function signup(formData: FormData) {
     password: data.password,
     options: {
       data: {
-        first_name: firstName,
-        last_name: lastName,
+        first_name: data.firstName,
+        last_name: data.lastName,
       }
     }
   })
 
   if (error) {
-    redirect('/error')
+    return {
+      success: false,
+      error: error.message
+    }
+  }
+
+  const userProfileData = {
+    email: data.email,
+    first_name: data.firstName,
+    last_name: data.lastName,
+    user_id: authData.user?.id,
+    updated_at: new Date().toISOString(),
+  }
+
+  const { error: userError } = await supabase
+    .from('profiles')
+    .insert(userProfileData)
+
+  if (userError) {
+    return {
+      success: false,
+      error: userError.message
+    }
   }
 
   revalidatePath('/', 'layout')
   redirect('/apply')
+  
+  // This is only reached if redirect fails
+  return { success: true }
 }
+
+export async function logout() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/login')
+}
+
