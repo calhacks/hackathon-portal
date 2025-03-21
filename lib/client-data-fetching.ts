@@ -88,6 +88,11 @@ export async function getProfile() {
     graduationYear: profileData?.graduation_year || '',
     github: profileData?.github || '',
     linkedin: profileData?.linkedin || '',
+    portfolio: profileData?.portfolio || '',
+    phone: profileData?.phone || '',
+    instagram: profileData?.instagram || '',
+    discord: profileData?.discord || '',
+    twitter: profileData?.twitter || '',
   }
 
   return { profile }

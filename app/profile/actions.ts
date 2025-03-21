@@ -19,6 +19,11 @@ export async function saveProfile(profile: Profile) {
     graduation_year: profile.graduationYear,
     github: profile.github,
     linkedin: profile.linkedin,
+    portfolio: profile.portfolio,
+    phone: profile.phone,
+    instagram: profile.instagram,
+    discord: profile.discord,
+    twitter: profile.twitter,
   }
 
   // Get the current user

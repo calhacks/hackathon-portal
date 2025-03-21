@@ -30,12 +30,15 @@ const karla = Karla({
 });
 
 export const metadata: Metadata = {
-  title: "Hackathons at Berkeley",
-  description: "Cal Hacks is the world's largest collegiate hackathon hosted at UC Berkeley, fostering a culture of hacking, entrepreneurship, and social good via the empowerment of technology.",
+  title: "Portal - Hackathons at Berkeley",
+  description: "A portal for Hackathons at Berkeley",
   openGraph: {
-    title: "Hackathons at Berkeley",
-    description: "Cal Hacks is the world's largest collegiate hackathon hosted at UC Berkeley, fostering a culture of hacking, entrepreneurship, and social good via the empowerment of technology.",
+    title: "Portal - Hackathons at Berkeley",
+    description: "A portal for Hackathons at Berkeley",
     images: ["https://calhacks-sierra.s3-us-west-2.amazonaws.com/assets/branding/og-image.jpg"],
+  },
+  icons: {
+    icon: "/baby-ddoski.svg",
   },
   twitter: {
     card: "summary_large_image",

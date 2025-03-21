@@ -129,31 +129,19 @@ export default function ApplicationsPage() {
         </div>
       ) : (
         <div className="bg-card border rounded-lg overflow-hidden">
-          <div className="grid grid-cols-12 bg-muted p-4 text-sm font-medium">
-            <div className="col-span-2">Hackathon</div>
+          <div className="grid grid-cols-10 bg-muted p-4 text-sm font-medium">
+            <div className="col-span-4">Application</div>
             <div className="col-span-2">Applied On</div>
-            <div className="col-span-2">University</div>
-            <div className="col-span-2">Major</div>
-            <div className="col-span-1">Year</div>
             <div className="col-span-2">Status</div>
-            <div className="col-span-1">Actions</div>
+            <div className="col-span-2">Actions</div>
           </div>
           
           {applications.map((app, index) => (
             <div key={app.id}>
-              <div className="grid grid-cols-12 p-4 items-center text-sm">
-                <div className="col-span-2 font-medium">AI Hackathon 3.0</div>
+              <div className="grid grid-cols-10 p-4 items-center text-sm">
+                <div className="col-span-4 font-medium">AI Hackathon 3.0</div>
                 <div className="col-span-2 text-muted-foreground">
                   {formatDate(app.created_at)}
-                </div>
-                <div className="col-span-2 truncate">
-                  {app.profiles?.university || "Not specified"}
-                </div>
-                <div className="col-span-2 truncate">
-                  {app.profiles?.major || "Not specified"}
-                </div>
-                <div className="col-span-1">
-                  {app.profiles?.graduation_year || "N/A"}
                 </div>
                 <div className="col-span-2">
                   <div className="flex items-center gap-1.5">
@@ -161,7 +149,7 @@ export default function ApplicationsPage() {
                     <span>{getStatusText(app.status)}</span>
                   </div>
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-2">
                   <button
                     onClick={() => openApplicationDetails(app)}
                     className="inline-flex items-center justify-center rounded-md text-xs font-medium transition-colors 

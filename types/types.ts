@@ -7,6 +7,11 @@ export type Profile = {
   graduationYear: number;
   github: string;
   linkedin: string;
+  portfolio: string;
+  phone: string;
+  instagram: string;
+  discord: string;
+  twitter: string;
 };
 
 export type Application = {

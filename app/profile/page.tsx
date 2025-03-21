@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { saveProfile } from "./actions"
-import { getProfile } from "./client-utils"
+import { getProfile } from "@/lib/client-data-fetching"
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -21,6 +21,11 @@ export default function ProfilePage() {
     graduationYear: 2025,
     github: "",
     linkedin: "",
+    portfolio: "",
+    phone: "",
+    instagram: "",
+    discord: "",
+    twitter: "",
   })
 
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function ProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Information */}
           <div>
-            <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">Basic Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-base font-medium mb-1">
@@ -151,24 +156,25 @@ export default function ProfilePage() {
           {/* Academic Information */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">Academic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="university" className="block text-base font-medium mb-1">
-                  University
-                </label>
-                <Input
-                  id="university"
-                  name="university"
-                  type="text"
-                  required
-                  value={formData.university}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+
+            <div>
+              <label htmlFor="university" className="block text-base font-medium mb-1">
+                University
+              </label>
+              <Input
+                id="university"
+                name="university"
+                type="text"
+                required
+                value={formData.university}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                      focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
                      dark:bg-gray-800 dark:text-white text-base"
-                  placeholder="UC Berkeley"
-                />
-              </div>
+                placeholder="UC Berkeley"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label htmlFor="major" className="block text-base font-medium mb-1">
                   Major
@@ -186,35 +192,37 @@ export default function ProfilePage() {
                   placeholder="Computer Science"
                 />
               </div>
-            </div>
-            <div className="mt-4">
-              <label htmlFor="graduationYear" className="block text-base font-medium mb-1">
-                Expected Graduation Year
-              </label>
-              <Input
-                id="graduationYear"
-                name="graduationYear"
-                type="number"
-                required
-                value={formData.graduationYear}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+              <div>
+
+
+                <label htmlFor="graduationYear" className="block text-base font-medium mb-1">
+                  Expected Graduation Year
+                </label>
+                <Input
+                  id="graduationYear"
+                  name="graduationYear"
+                  type="number"
+                  required
+                  value={formData.graduationYear}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
                    focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
                    dark:bg-gray-800 dark:text-white text-base"
-                placeholder="2025"
-              />
+                  placeholder="2025"
+                />
+              </div>
             </div>
+
           </div>
 
           <Separator />
 
-          {/* Professional Information */}
           <div>
-            <h2 className="text-2xl font-semibold mb-4">Professional Information (Optional)</h2>
+            <h2 className="text-2xl font-semibold mb-4">Links and Contact (Optional)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="github" className="block text-base font-medium mb-1">
-                  GitHub Profile
+                  GitHub
                 </label>
                 <Input
                   id="github"
@@ -230,7 +238,7 @@ export default function ProfilePage() {
               </div>
               <div>
                 <label htmlFor="linkedin" className="block text-base font-medium mb-1">
-                  LinkedIn Profile
+                  LinkedIn
                 </label>
                 <Input
                   id="linkedin"
@@ -244,6 +252,70 @@ export default function ProfilePage() {
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
+              <div>
+                <label htmlFor="portfolio" className="block text-base font-medium mb-1">
+                  Portfolio
+                </label>
+                <Input
+                  id="portfolio"
+                  name="portfolio"
+                  type="url"
+                  value={formData.portfolio}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+                     focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+                     dark:bg-gray-800 dark:text-white text-base"
+                  placeholder="https://yourwebsite.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-base font-medium mb-1">
+                  Phone
+                </label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+                     focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
+                     dark:bg-gray-800 dark:text-white text-base"
+                  placeholder="123-456-7890"
+                />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label htmlFor="instagram" className="block text-base font-medium mb-1">
+                Instagram
+              </label>
+              <Input
+                id="instagram"
+                name="instagram"
+                type="url"
+                value={formData.instagram}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
+                   dark:bg-gray-800 dark:text-white text-base"
+                placeholder="https://instagram.com/username"
+              />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="discord" className="block text-base font-medium mb-1">
+                Discord
+              </label>
+              <Input
+                id="discord"
+                name="discord"
+                type="text"
+                value={formData.discord}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 
+                   dark:bg-gray-800 dark:text-white text-base"
+                placeholder="username#1234"
+              />
             </div>
             {/* <div className="mt-4">
               <label htmlFor="resume" className="block text-base font-medium mb-1">

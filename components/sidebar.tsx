@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { LogOut, Globe, Moon, Sun, FileText, Settings, Users, Library } from "lucide-react"
+import { LogOut, Globe, Moon, Sun, FileText, Settings, Users, Library, HelpCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
@@ -72,6 +72,12 @@ export function Sidebar() {
             rel="noopener noreferrer"
           >
             <Globe className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/faq"
+            className="rounded-md p-2 transition-colors text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+          >
+            <HelpCircle className="h-5 w-5" />
           </Link>
           <button
             className="rounded-md p-2 transition-colors text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
